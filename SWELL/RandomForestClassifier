@@ -3,7 +3,7 @@ rf_classifier.fit(x_train, y_train)
 y_pred = rf_classifier.predict(x_test)
 
 accuracy = accuracy_score(y_test, y_pred)
-print("Accuracy:", accuracy)
+print("Accuracy:", accuracy) #0.99
 
 report = classification_report(y_test, y_pred)
 print("Classification Report:")
