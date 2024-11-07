@@ -1,0 +1,30 @@
+import ipywidgets as widgets
+from IPython.display import display
+
+# Define the threshold for stress prediction
+threshold = 123.73  # You can adjust this threshold as needed
+
+# Function to predict stress level
+def predict_stress_level(bpm_value):
+    try:
+        bpm_value = float(bpm_value)
+        # Determine stress level based on threshold
+        stress_level = "Stressed" if bpm_value >= threshold else "Not Stressed"
+        print(f"BPM Value: {bpm_value}\nStress Level: {stress_level}")
+    except ValueError:
+        print("Invalid BPM value. Please enter a valid number.")
+
+# Create widgets for BPM input and prediction button
+bpm_input = widgets.Text(description="Enter BPM Value:")
+predict_button = widgets.Button(description="Predict Stress Level")
+
+# Define callback function for predict button click
+def on_predict_button_clicked(b):
+    predict_stress_level(bpm_input.value)
+
+# Attach callback function to predict button
+predict_button.on_click(on_predict_button_clicked)
+
+# Display widgets
+display(bpm_input)
+display(predict_button)
