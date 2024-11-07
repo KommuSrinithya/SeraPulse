@@ -3,12 +3,12 @@ Stress is a common aspect of everyday life that affects most people at various t
 
 ![Screenshot 2024-11-07 195826](https://github.com/user-attachments/assets/43dca44e-8572-44a6-bae9-d52e5c52e892)
 
-#Physiological Stress Detection System Block Diagram
+# Physiological Stress Detection System Block Diagram
 The data collection methodologies for stress detection research were meticulously designed to provide robust and reliable insights into physiological responses across diverse populations. Participant recruitment ensured demographic diversity, considering variables such as age, gender, and relevant health conditions. Ethical considerations were paramount, with institutional review board approvals and informed consent detailing objectives, procedures, risks, and benefits.
 
 ![Screenshot 2024-07-21 123046](https://github.com/user-attachments/assets/91773295-cb4b-49af-8419-8ce603126113)
 
-#Overview of Data Collection and Feature Extraction Process for Stress Detection
+# Overview of Data Collection and Feature Extraction Process for Stress Detection
 The applications of this technology spanned various domains including healthcare, workplace wellness, and personal well-being, underscoring its effectiveness in early stress detection and management.Future advancements aim to integrate these findings into smartwatch technology, thereby empowering individuals with immediate feedback on their stress levels.This proactive approach not only enhances personal health management but also promotes overall well-being in diverse settings.
 
 ![Screenshot 2024-11-07 200612](https://github.com/user-attachments/assets/050f3af9-e5df-45fe-b011-07e5ed310b79)
