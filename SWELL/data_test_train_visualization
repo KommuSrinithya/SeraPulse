@@ -1,0 +1,146 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+from sklearn import preprocessing
+from sklearn import metrics
+from sklearn.metrics import classification_report
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import confusion_matrix
+from sklearn.naive_bayes import BernoulliNB
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.linear_model import Perceptron
+from sklearn.model_selection import cross_val_score
+
+from sklearn.svm import SVC
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.models import load_model
+
+test=pd.read_csv("/content/drive/MyDrive/test.csv.zip")
+train=pd.read_csv("/content/drive/MyDrive/train.csv (1).zip")
+
+from google.colab import drive
+drive.mount('/content/drive')
+
+test.head()
+train.head()
+
+train['condition'].unique()
+conditions = dict(train['condition'].value_counts())
+labels = list(conditions.keys())
+counts = list(conditions.values())
+plt.bar(labels,counts, color ='green',
+        width = 0.4)
+
+train.info()
+test.info()
+train.shape
+test.shape
+
+train.describe()
+test.describe()
+train['condition'].unique()
+  
+le = preprocessing.LabelEncoder()
+le.fit(train['condition'])
+train['condition'] = le.transform(train['condition'])
+e = test['condition'].unique()
+test['condition'] = le.transform(test['condition'])
+
+label_encoder = preprocessing.LabelEncoder()
+
+# Fit the LabelEncoder to your data and transform the categories into numerical labels
+train['condition']= label_encoder.fit_transform(train['condition'])
+test['condition']= label_encoder.fit_transform(test['condition'])
+# Print the encoded data
+test.head()
+
+corr = train.corr()
+plt.figure(figsize=(8, 6))
+sns.heatmap(corr, cmap="Blues", annot=False)
+plt.show()
+
+train['condition'].unique()
+
+def feature_selection(correlation,threshold):
+    selected_features = []
+    for i in range(corr.shape[0]):
+      if corr.iloc[i,35] > threshold:
+        selected_features.append(train.iloc[:,i])
+    return pd.DataFrame(selected_features).T
+
+CORRELATION_THRESHOLD = 0.05
+nn_train = train.copy()
+reduced_train = feature_selection(corr,CORRELATION_THRESHOLD)
+reduced_train.head()
+
+reduced_train.hist(figsize=(12, 10))
+plt.suptitle('Histograms of All Columns', fontsize=16)
+plt.xlabel('Value')
+plt.ylabel('Frequency')
+
+def normalize_data(df, label_column):
+
+    labels = df[label_column]
+    data = df.drop(columns=[label_column])
+
+    # Perform normalization on the data columns
+    normalized_data = (data - data.min()) / (data.max() - data.min())
+
+    # Combine the normalized data and labels back into a DataFrame
+    normalized_df = pd.concat([normalized_data, labels], axis=1)
+
+    return normalized_df
+reduced_train=normalize_data(reduced_train,'condition')
+nn_test=test.copy()
+test=normalize_data(test,'condition')
+#nn_train=normalize_data(nn_train,'condition')
+
+reduced_train.hist(figsize=(12, 10))
+plt.suptitle('Histograms of All Columns after normalization', fontsize=16)
+plt.xlabel('Value')
+plt.ylabel('Frequency')
+
+x_train = reduced_train.iloc[:,:-1]
+y_train = reduced_train.iloc[:,-1]
+
+x_train.shape
+
+nn_x_train = nn_train.iloc[:,:-1]
+nn_y_train = nn_train.iloc[:,-1]
+
+nn_x_test = nn_test[nn_x_train.columns]
+x_test = test[x_train.columns]
+nn_y_test=nn_test['condition']
+y_test = test['condition']
+
+test.head()
+from tensorflow.keras.layers import Dense, Dropout, Activation, Flatten
+
+
+model = Sequential()
+model.add(Dense(128, activation='relu', input_dim=35))
+model.add(Dense(512, activation='sigmoid'))
+model.add(Dense(64, activation='sigmoid'))
+model.add(Dense(1, activation='sigmoid', kernel_initializer="normal"))
+model.summary()
+
+model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+#checkpoint = ModelCheckpoint("best_model.keras", monitor='accuracy', verbose=1, save_best_only=True, mode='min')
+h=model.fit(nn_x_train,nn_y_train, epochs=10, batch_size=1000)# , validation_data=(nn_x_train,nn_y_train), callbacks=[checkpoint]
+
+
+nn_prediction = (model.predict(nn_x_test) > 0.5).astype("int32")
+nn_prediction
+
+print(classification_report(nn_y_test,nn_prediction))
+
+  
