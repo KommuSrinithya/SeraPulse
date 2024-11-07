@@ -1,0 +1,119 @@
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
+import re
+
+# Load data from CSV file
+data = pd.read_csv("/content/drive/MyDrive/DATA STRESS.csv")
+
+# Assuming your CSV file has a column named 'Bea' containing BPM values
+# Replace 'Bea' with the actual column name in your CSV file
+bpm_column_name = 'Bea'
+
+if bpm_column_name not in data.columns:
+    raise ValueError("BPM column not found in the CSV file. Please check column names.")
+
+# Extract numeric BPM values and ignore non-numeric values
+bpm_values = []
+for value in data[bpm_column_name]:
+    match = re.search(r'\d+', str(value))
+    if match:
+        bpm_values.append(float(match.group()))
+    else:
+        bpm_values.append(None)  # Replace non-numeric values with None or any other suitable placeholder
+
+# Remove rows with missing BPM values
+data['BPM'] = bpm_values
+data.dropna(subset=['BPM'], inplace=True)
+
+bpm_values = data['BPM'].values.reshape(-1, 1)  # Reshape to a 2D array for scikit-learn
+
+# Assuming all data points represent the same stress level
+stress_labels = ['Stressed'] * len(bpm_values)
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(bpm_values, stress_labels, test_size=0.2, random_state=42)
+
+# Train a classifier (you can use any classifier you prefer)
+classifier = RandomForestClassifier(random_state=42)
+classifier.fit(X_train, y_train)
+
+# Evaluate the classifier
+y_pred = classifier.predict(X_test)
+accuracy = accuracy_score(y_test, y_pred) * 100
+
+print(f"Accuracy: {accuracy:.2f}%")
+
+# Predict stress levels for new BPM data
+# Replace new_bpm_data with your new BPM data
+# new_predictions = classifier.predict(new_bpm_data)
+# print("Predicted stress levels for new BPM data:", new_predictions)
+
+
+# Compute the average BPM value
+average_bpm = bpm_values.mean()
+
+# Set the threshold
+threshold = 600
+import numpy as np
+
+# Assuming 'bpm_values' contains your BPM values
+# Calculate mean and standard deviation of BPM values
+mean_bpm = np.mean(bpm_values)
+std_bpm = np.std(bpm_values)
+
+# Define a threshold as mean plus a certain number of standard deviations
+threshold = mean_bpm + 2 * std_bpm  # Adjust the multiplier as needed
+
+print(f"Mean BPM: {mean_bpm}")
+print(f"Standard Deviation BPM: {std_bpm}")
+print(f"Suggested Threshold: {threshold}")
+
+
+# Define the suggested threshold
+threshold = 123.73
+
+# Classify individuals based on the threshold
+stress_levels = ["Stressed" if bpm >= threshold else "Not Stressed" for bpm in bpm_values]
+
+# Print the classification results
+for bpm, stress_level in zip(bpm_values, stress_levels):
+    print(f"BPM: {bpm}, Stress Level: {stress_level}")
+
+
+import numpy as np
+
+# Calculate mean and standard deviation of BPM values
+mean_bpm = np.mean(bpm_values)
+std_bpm = np.std(bpm_values)
+
+# Define the threshold as mean plus two times the standard deviation
+threshold = mean_bpm + 2 * std_bpm
+
+# Classify individuals based on the threshold
+stress_levels = ["Stressed" if bpm >= threshold else "Not Stressed" for bpm in bpm_values]
+
+# Print the classification results
+for bpm, stress_level in zip(bpm_values, stress_levels):
+    print(f"BPM: {bpm}, Stress Level: {stress_level}")
+
+# Print the calculated threshold
+print(f"Suggested Threshold: {threshold}")
+
+
+import numpy as np
+
+# Calculate the average BPM value
+average_bpm = np.mean(bpm_values)
+
+# Define the threshold for overall prediction
+threshold = 123.73  # This is the suggested threshold value based on mean and standard deviation
+
+# Determine the overall stress level based on the average BPM and threshold
+overall_prediction = "Stressed" if average_bpm >= threshold else "Not Stressed"
+
+# Print the overall prediction
+print(f"Overall Prediction: {overall_prediction}")
+
+
