@@ -1,0 +1,10 @@
+dt_classifier = DecisionTreeClassifier(random_state=42)
+dt_classifier.fit(x_train, y_train)
+y_pred = dt_classifier.predict(x_test)
+
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy:", accuracy)
+
+report = classification_report(y_test, y_pred)
+print("Classification Report:")
+print(report)
